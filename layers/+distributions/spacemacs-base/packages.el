@@ -328,8 +328,11 @@
     :init
     (progn
       ;; note for Windows: GNU find or Cygwin find must be in path to enable
-      ;; fast indexing
-      (when (and (spacemacs/system-is-mswindows) (executable-find "find"))
+      ;; fast indexing, because windows ships with c:\windows\system32\find.exe
+      ;; (which is not at all related to findutils) we exclude that.
+      (when (and (spacemacs/system-is-mswindows) (executable-find "find")
+                 (not (file-in-directory-p
+                       (executable-find "find") "C:\\Windows")))
         (setq  projectile-indexing-method 'alien
                projectile-generic-command "find . -type f"))
       (setq projectile-sort-order 'recentf
